@@ -6,6 +6,8 @@ WORKDIR /operator
 ENV PYTHONPATH "${PYTHONPATH}:~/.pyenv/versions/3.9.0/bin/python3"
 RUN python3 -m pip install -r ./requirements.txt
 
+#RUN curl -fsSL https://ollama.com/install.sh | sh
+
 ENV TERCEN_SERVICE_URI https://tercen.com
 
 ENTRYPOINT [ "python3", "main.py"]

@@ -4,3 +4,7 @@
 .Ruserdata
 .idea
 venv/*
+tmp/*
+lm_studio/*
+cache/*
+exports/*

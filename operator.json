@@ -1,9 +1,19 @@
 {
-    "name": "Template Python operator",
-    "description": "Mean operator implemented in Python",
-    "tags": ["template"],
-    "authors": ["tercen"],
-    "urls": ["https://github.com/tercen/template-python-operator"],
-    "container":"tercen/template-python-operator:latest",
-    "properties": [ ]
-}
+    "name": "PandasAI Operator",
+    "description": "LLM Prompt tests",
+    "isWebApp": true,
+    "isViewOnly": false,
+    "tags": [
+  
+    ],
+    "authors": [
+      "tercen"
+    ],
+    "urls": [
+      "https://github.com/tercen/pandasai_operator"
+    ],
+    "serve": "build/web",
+    "properties": [
+  
+    ]
+  }
