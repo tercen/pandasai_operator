@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:flutter/material.dart';
 
 /// Flutter code sample for [TextField].
@@ -43,27 +45,40 @@ class _TextFieldExampleState extends State<TextFieldExample> {
       body: Center(
         child: TextField(
           controller: _controller,
-          onSubmitted: (String value) async {
-            await showDialog<void>(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: const Text('Thanks!'),
-                  content: Text(
-                      'You typed "$value", which has length ${value.characters.length}.'),
-                  actions: <Widget>[
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text('OK'),
-                    ),
-                  ],
-                );
-              },
+          decoration: InputDecoration(
+            helperText: "Analysis Prompt",
+            border: const OutlineInputBorder(),
+            labelText: Uri.base.toString(),
+          ),
+          onSubmitted: (String value){
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ResultPage(prompt: value, url: Uri.base.toString(),)),
             );
           },
         ),
+      ),
+    );
+  }
+}
+
+
+class ResultPage extends StatelessWidget {
+  final String url;
+  final String prompt;
+
+  const ResultPage({super.key, this.url="", this.prompt=""});
+
+  const ResultPage.params({super.key, this.url="", this.prompt=""});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Second Route'),
+      ),
+      body: Center(
+        child: Text("$url - $prompt"),
       ),
     );
   }
