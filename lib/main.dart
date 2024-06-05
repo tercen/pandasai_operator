@@ -1,6 +1,11 @@
-import 'dart:html';
-
+// import 'dart:html';
+// import 'dart:io';
+// import 'dart:js';
+import 'package:ollama/ollama.dart';
+// import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+// import 'dart:convert';
+import 'package:ollama_dart/ollama_dart.dart';
 
 /// Flutter code sample for [TextField].
 
@@ -45,16 +50,28 @@ class _TextFieldExampleState extends State<TextFieldExample> {
       body: Center(
         child: TextField(
           controller: _controller,
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             helperText: "Analysis Prompt",
-            border: const OutlineInputBorder(),
-            labelText: Uri.base.toString(),
+            border: OutlineInputBorder(),
+            labelText: "What is the sum of [1,2,3,4,5,6,7,8]?",
           ),
           onSubmitted: (String value){
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => ResultPage(prompt: value, url: Uri.base.toString(),)),
-            );
+              // MaterialPageRoute(builder: (context) => ResultPage.resultPageFactory(prompt: value, url: Uri.base.toString(),)),
+              MaterialPageRoute(builder: (context) => FutureBuilder(
+                future: resultPageFactory(value),
+                builder: (ctx, snapshot) {
+                        if( snapshot.connectionState == ConnectionState.waiting){
+                                  return  Center(child: Text('Please wait its loading...'));
+                              }else{
+                                  if (snapshot.hasError)
+                                    return Center(child: Text('Error: ${snapshot.error}'));
+                                  else
+                                    return Center(child: ResultPage(key: const Key("!"), url: Uri.base.toString(), prompt: snapshot.data.toString()));  // snapshot.data  :- get your object which is pass from your downloadData() function
+                              }                          
+                  })
+            ));
           },
         ),
       ),
@@ -62,6 +79,17 @@ class _TextFieldExampleState extends State<TextFieldExample> {
   }
 }
 
+Future<String> resultPageFactory(String prompt) async {
+  var client = OllamaClient();
+  final generated = await client.generateCompletion(
+    request: GenerateCompletionRequest(
+      model: 'mistral:latest',
+      prompt: prompt,
+    ),
+  );
+
+  return Future.value(generated.response.toString());
+}
 
 class ResultPage extends StatelessWidget {
   final String url;
@@ -69,7 +97,7 @@ class ResultPage extends StatelessWidget {
 
   const ResultPage({super.key, this.url="", this.prompt=""});
 
-  const ResultPage.params({super.key, this.url="", this.prompt=""});
+
 
   @override
   Widget build(BuildContext context) {
