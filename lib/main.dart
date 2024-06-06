@@ -47,12 +47,20 @@ class _TextFieldExampleState extends State<TextFieldExample> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: TextField(
+      body: Align(
+        alignment: const Alignment(0.0, -0.9),
+        child:  SizedBox(
+          width: 500,
+          height: 200,
+          child: TextField(
+          keyboardType: TextInputType.multiline,
+          maxLines: null,
+          minLines: 4,
           controller: _controller,
           decoration: const InputDecoration(
-            helperText: "Analysis Prompt",
+            // helperText: "Analysis Prompt",
             border: OutlineInputBorder(),
+
             labelText: "Write your prompt here",
           ),
           onSubmitted: (String value){
@@ -72,6 +80,7 @@ class _TextFieldExampleState extends State<TextFieldExample> {
                 })
             ));
           },
+        )
         ),
       ),
     );
@@ -103,10 +112,11 @@ class ResultPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Second Route'),
+        title: const Text('Write a new prompt'),
       ),
       body: Center(
-        child: Text("$url - $prompt"),
+        // child: Text("$url - $prompt"),
+        child: Text("The prompt '$prompt' will be passed to the server"),
       ),
     );
   }
