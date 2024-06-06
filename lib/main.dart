@@ -53,9 +53,9 @@ class _TextFieldExampleState extends State<TextFieldExample> {
           width: 500,
           height: 200,
           child: TextField(
-          keyboardType: TextInputType.multiline,
-          maxLines: null,
-          minLines: 4,
+          // keyboardType: TextInputType.multiline,
+          // maxLines: null,
+          // minLines: 4,
           controller: _controller,
           decoration: const InputDecoration(
             // helperText: "Analysis Prompt",
