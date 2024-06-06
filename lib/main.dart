@@ -1,7 +1,7 @@
 // import 'dart:html';
 // import 'dart:io';
 // import 'dart:js';
-import 'package:ollama/ollama.dart';
+// import 'package:ollama/ollama.dart';
 // import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 // import 'dart:convert';
@@ -61,16 +61,15 @@ class _TextFieldExampleState extends State<TextFieldExample> {
               // MaterialPageRoute(builder: (context) => ResultPage.resultPageFactory(prompt: value, url: Uri.base.toString(),)),
               MaterialPageRoute(builder: (context) => FutureBuilder(
                 future: resultPageFactory(value),
-                builder: (ctx, snapshot) {
-                        if( snapshot.connectionState == ConnectionState.waiting){
-                                  return  Center(child: Text('Please wait its loading...'));
-                              }else{
-                                  if (snapshot.hasError)
-                                    return Center(child: Text('Error: ${snapshot.error}'));
-                                  else
-                                    return Center(child: ResultPage(key: const Key("!"), url: Uri.base.toString(), prompt: snapshot.data.toString()));  // snapshot.data  :- get your object which is pass from your downloadData() function
-                              }                          
-                  })
+                builder: (ctx, data) {
+                  if (data.hasData ){
+                    return Center(child: ResultPage(key: const Key("!"), url: Uri.base.toString(), prompt: data.data.toString()));  
+                  } else if (data.hasError){
+                    return Center(child: Text('Error: ${data.error}'));
+                  } else{
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                })
             ));
           },
         ),
