@@ -53,7 +53,7 @@ class _TextFieldExampleState extends State<TextFieldExample> {
           decoration: const InputDecoration(
             helperText: "Analysis Prompt",
             border: OutlineInputBorder(),
-            labelText: "What is the sum of [1,2,3,4,5,6,7,8]?",
+            labelText: "Write your prompt here",
           ),
           onSubmitted: (String value){
             Navigator.push(
