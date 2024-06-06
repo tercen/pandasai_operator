@@ -79,15 +79,16 @@ class _TextFieldExampleState extends State<TextFieldExample> {
 }
 
 Future<String> resultPageFactory(String prompt) async {
-  var client = OllamaClient();
-  final generated = await client.generateCompletion(
-    request: GenerateCompletionRequest(
-      model: 'mistral:latest',
-      prompt: prompt,
-    ),
-  );
+  // var client = OllamaClient();
+  // final generated = await client.generateCompletion(
+  //   request: GenerateCompletionRequest(
+  //     model: 'mistral:latest',
+  //     prompt: prompt,
+  //   ),
+  // );
 
-  return Future.value(generated.response.toString());
+  // return Future.value(generated.response.toString());
+  return Future.value("Something");
 }
 
 class ResultPage extends StatelessWidget {
