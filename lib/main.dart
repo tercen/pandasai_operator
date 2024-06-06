@@ -88,7 +88,7 @@ Future<String> resultPageFactory(String prompt) async {
   // );
 
   // return Future.value(generated.response.toString());
-  return Future.value("Something");
+  return Future.value(prompt);
 }
 
 class ResultPage extends StatelessWidget {
