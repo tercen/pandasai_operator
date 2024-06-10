@@ -5,7 +5,7 @@
 // import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 // import 'dart:convert';
-import 'package:ollama_dart/ollama_dart.dart';
+import 'package:http/http.dart' as http;
 
 /// Flutter code sample for [TextField].
 
@@ -68,7 +68,7 @@ class _TextFieldExampleState extends State<TextFieldExample> {
               context,
               // MaterialPageRoute(builder: (context) => ResultPage.resultPageFactory(prompt: value, url: Uri.base.toString(),)),
               MaterialPageRoute(builder: (context) => FutureBuilder(
-                future: resultPageFactory(value),
+                future: resultPageFactory(value, Uri.base.toString()),
                 builder: (ctx, data) {
                   if (data.hasData ){
                     return Center(child: ResultPage(key: const Key("!"), url: Uri.base.toString(), prompt: data.data.toString()));  
@@ -87,7 +87,10 @@ class _TextFieldExampleState extends State<TextFieldExample> {
   }
 }
 
-Future<String> resultPageFactory(String prompt) async {
+
+
+
+Future<String> resultPageFactory(String prompt, String url) async {
   // var client = OllamaClient();
   // final generated = await client.generateCompletion(
   //   request: GenerateCompletionRequest(
@@ -97,7 +100,11 @@ Future<String> resultPageFactory(String prompt) async {
   // );
 
   // return Future.value(generated.response.toString());
-  return Future.value(prompt);
+  // print(url);
+  // final response =
+        //  await http.get(Uri.parse("https://localhost:5000?prompt=" + 
+        //  prompt));
+  return Future.value(url);
 }
 
 class ResultPage extends StatelessWidget {
