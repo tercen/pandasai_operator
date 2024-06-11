@@ -3,9 +3,13 @@
 // import 'dart:js';
 // import 'package:ollama/ollama.dart';
 // import 'package:flutter/foundation.dart';
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 // import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:universal_io/io.dart';
 
 /// Flutter code sample for [TextField].
 
@@ -71,7 +75,7 @@ class _TextFieldExampleState extends State<TextFieldExample> {
                 future: resultPageFactory(value, Uri.base.toString()),
                 builder: (ctx, data) {
                   if (data.hasData ){
-                    return Center(child: ResultPage(key: const Key("!"), url: Uri.base.toString(), prompt: data.data.toString()));  
+                    return Center(child: ResultPage(key: const Key("!"), url: Uri.base.toString(), response: data.data));  
                   } else if (data.hasError){
                     return Center(child: Text('Error: ${data.error}'));
                   } else{
@@ -90,7 +94,7 @@ class _TextFieldExampleState extends State<TextFieldExample> {
 
 
 
-Future<String> resultPageFactory(String prompt, String url) async {
+Future<http.Response> resultPageFactory(String prompt, String url) async {
   // var client = OllamaClient();
   // final generated = await client.generateCompletion(
   //   request: GenerateCompletionRequest(
@@ -100,31 +104,78 @@ Future<String> resultPageFactory(String prompt, String url) async {
   // );
 
   // return Future.value(generated.response.toString());
-  // print(url);
-  // final response =
-        //  await http.get(Uri.parse("https://localhost:5000?prompt=" + 
-        //  prompt));
-  return Future.value(url);
+  String reqUrl = "https://localhost:5000/prompt?text=$prompt";
+  if(url.contains("?")){
+    final paramsLine = url.split("?")[1];
+    final paramsArray = paramsLine.split("?");
+    String taskId = "";
+    String authToken = "";
+    for (var i = 0; i < paramsArray.length; i++) {
+      final valuePair = paramsArray[i].split("=");
+
+      switch (valuePair[0]){
+        case "taskId":
+          taskId = valuePair[1];
+          break;
+        case "token":
+          authToken = valuePair[1];
+          break;
+      }
+    }
+
+    
+    if( taskId != ""){
+      reqUrl += "&taskId=$taskId";
+    }
+
+    if( authToken != ""){
+      reqUrl += "&token=$authToken";
+    }
+
+  }
+
+
+  
+  reqUrl = Uri.encodeFull(reqUrl.replaceAll("https", "http"));
+  
+  final response = await http.get(Uri.parse(reqUrl));
+  
+  return Future.value(response);
 }
+
 
 class ResultPage extends StatelessWidget {
   final String url;
-  final String prompt;
+  final http.Response? response;
 
-  const ResultPage({super.key, this.url="", this.prompt=""});
+
+  const ResultPage({super.key, this.url="", required this.response});
 
 
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Write a new prompt'),
-      ),
-      body: Center(
-        // child: Text("$url - $prompt"),
-        child: Text("The prompt '$prompt' will be passed to the server"),
-      ),
-    );
-  }
+    String? contentType = response?.headers['content-type'];
+
+    if( contentType != null && contentType == "text/plain"){
+        return Scaffold(
+        appBar: AppBar(
+          title: const Text('Write a new prompt'),
+        ),
+        body: Center(
+          child: Text(response!.body),
+        ),
+      );
+    } else {
+          return Scaffold(
+          appBar: AppBar(
+            title: const Text('Write a new prompt'),
+          ),
+          body: Center(
+            child: Image.memory(response!.bodyBytes),
+          ),
+        );
+      }
+    }
+
 }
