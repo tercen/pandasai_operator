@@ -3,13 +3,12 @@
 // import 'dart:js';
 // import 'package:ollama/ollama.dart';
 // import 'package:flutter/foundation.dart';
-import 'dart:io';
-import 'dart:typed_data';
-
+import 'dart:html' as html;
+import 'package:image_downloader_web/image_downloader_web.dart';
 import 'package:flutter/material.dart';
 // import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:universal_io/io.dart';
+
 
 /// Flutter code sample for [TextField].
 
@@ -146,10 +145,15 @@ Future<http.Response> resultPageFactory(String prompt, String url) async {
 
 class ResultPage extends StatelessWidget {
   final String url;
+  
   final http.Response? response;
 
 
   const ResultPage({super.key, this.url="", required this.response});
+
+  Future<void> saveImg() async {
+    await WebImageDownloader.downloadImageFromUInt8List(uInt8List: response!.bodyBytes);
+  }
 
 
 
@@ -171,8 +175,17 @@ class ResultPage extends StatelessWidget {
           appBar: AppBar(
             title: const Text('Write a new prompt'),
           ),
-          body: Center(
-            child: Image.memory(response!.bodyBytes),
+          body: Column(
+            children: [
+              Center(child: Image.memory(response!.bodyBytes)),
+              Center(
+                child: ElevatedButton(
+                  child: const Text("Download Image"),
+                  onPressed: () => saveImg(),
+                ),
+              ),
+            ],
+            
           ),
         );
       }
