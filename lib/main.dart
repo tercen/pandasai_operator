@@ -5,9 +5,7 @@
 // import 'package:flutter/foundation.dart';
 import 'dart:convert';
 import 'dart:html' as html;
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:image_downloader_web/image_downloader_web.dart';
 import 'package:flutter/material.dart';
 // import 'dart:convert';
@@ -135,8 +133,10 @@ class _PromptWidgetState extends State<PromptWidget> {
 
 
 Future<http.Response> resultPageFactory(String prompt, String apiKey) async {
-  String reqUrl = "https://localhost:5000/prompt?text=$prompt";
+  // String reqUrl = "https://localhost:5000/prompt?text=$prompt";
+  String reqUrl = "https://localhost:5000/prompt";
   
+  Map<String, String> payload = {"prompt":prompt};
 
   final taskId = Uri.base.queryParameters['taskId'];
   final authToken = Uri.base.queryParameters['token'];
@@ -144,21 +144,27 @@ Future<http.Response> resultPageFactory(String prompt, String apiKey) async {
 
     
   if( taskId != null && taskId != "" ){
-    reqUrl += "&taskId=$taskId";
+    payload["taskId"] = taskId;
+    // reqUrl += "&taskId=$taskId";
   }
 
   if( authToken != null && authToken != ""){
-    reqUrl += "&token=$authToken";
+    payload["authToken"] = authToken;
+    // reqUrl += "&token=$authToken";
   }
 
   if( apiKey != ""){
-    reqUrl += "&apiKey=$authToken";
+    payload["apiKey"] = apiKey;
   }
 
+
+  
   
   reqUrl = Uri.encodeFull(reqUrl.replaceAll("https", "http"));
   
-  final response = await http.get(Uri.parse(reqUrl));
+  // final response = await http.get(Uri.parse(reqUrl));
+  
+  final response = await http.post(Uri.parse(reqUrl), body: json.encode(payload) );
   
   return Future.value(response);
 }
@@ -245,35 +251,6 @@ class ResultPage extends StatelessWidget {
       ),
     );
 
-    // // if( contentType != null && contentType == "text/plain"){
-    //     return Scaffold(
-    //     appBar: AppBar(
-    //       title: const Text('Write a new prompt'),
-    //     ),
-    //     body: Center(
-    //       // child: Text(response!.body),
-    //       child: Text(responseData["logs"].join("\n")),
-    //     ),
-    //   );
-    // // } else {
-    // //       return Scaffold(
-    // //       appBar: AppBar(
-    // //         title: const Text('Write a new prompt'),
-    // //       ),
-    // //       body: Column(
-    // //         children: [
-    // //           Center(child: Image.memory(response!.bodyBytes)),
-    // //           Center(
-    // //             child: ElevatedButton(
-    // //               child: const Text("Download Image"),
-    // //               onPressed: () => saveImg(),
-    // //             ),
-    // //           ),
-    // //         ],
-            
-    // //       ),
-    // //     );
-    // //   }
   }
 
 }
