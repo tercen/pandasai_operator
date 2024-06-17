@@ -134,14 +134,15 @@ class _PromptWidgetState extends State<PromptWidget> {
 
 Future<http.Response> resultPageFactory(String prompt, String apiKey) async {
   // String reqUrl = "https://localhost:5000/prompt?text=$prompt";
-  String reqUrl = "https://localhost:5000/prompt";
+  var reqUrl = Uri.parse("https://ai.tercen.com/prompt");
   
   Map<String, String> payload = {"prompt":prompt};
 
   final taskId = Uri.base.queryParameters['taskId'];
   final authToken = Uri.base.queryParameters['token'];
+  final serviceApi = Uri.base.replace(path: "", query: "");
 
-
+  payload["serviceApi"] = serviceApi.toString();
     
   if( taskId != null && taskId != "" ){
     payload["taskId"] = taskId;
@@ -158,13 +159,11 @@ Future<http.Response> resultPageFactory(String prompt, String apiKey) async {
   }
 
 
-  
-  
-  reqUrl = Uri.encodeFull(reqUrl.replaceAll("https", "http"));
+  // reqUrl =  Uri.encodeFull(reqUrl.replaceAll("https", "http"));
   
   // final response = await http.get(Uri.parse(reqUrl));
   
-  final response = await http.post(Uri.parse(reqUrl), body: json.encode(payload) );
+  final response = await http.post(reqUrl, body: json.encode(payload) );
   
   return Future.value(response);
 }
